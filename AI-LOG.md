@@ -1,0 +1,1 @@
+Talked with Github Copilot a bit to help figure out options to research further for the router. It suggested Lit Router, along with a few alternatives to look into.
