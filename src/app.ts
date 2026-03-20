@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { Router } from '@lit-labs/router';
 import './pages/home/home.ts';
 import './pages/result/result.ts';
+import './components/navbar.ts';
 
 @customElement('lit-app')
 export class LitApp extends LitElement {
@@ -21,6 +22,7 @@ export class LitApp extends LitElement {
 
   render() {
     return html`
+      <nav-bar></nav-bar>
       <main>${this.router.outlet()}</main>
     `;
   }
