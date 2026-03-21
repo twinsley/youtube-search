@@ -53,4 +53,4 @@ Renders the correct template for the current task status
 Allows aborting tasks with an AbortController
 
 
-The design I went with included multiple pages, which meant I needed a client side router. I chose to use Lit Labs Router for routing between the pages. Other options are available of course and perhaps would be better choices for a production app (e.g. @vaadin/router for example, although this one is now deprecated) because of the Lit Labs router being in beta still, but for this project the Lit one works fine and should integrate well since it's built by the Lit team.
+The design I went with included multiple pages, which meant I needed a client side router. I chose to use Lit Labs Router for routing between the pages. Other options are available of course and perhaps would be better choices for a production app (e.g. @vaadin/router for example, although this one is now deprecated) because of the Lit Labs router being in beta still, but for this project the Lit one works fine and integrates easily since it's built by the Lit team.
