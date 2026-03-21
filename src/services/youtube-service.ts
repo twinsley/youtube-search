@@ -31,8 +31,19 @@ export async function searchYouTube(
             error?.error?.message ?? `YouTube API error: ${response.status}`
         );
     }
+        const searchData = (await response.json()) as YouTubeSearchResponse;
 
-    return response.json() as Promise<YouTubeSearchResponse>;
+    const videoIds = searchData.items.map(item => item.id.videoId).filter((id) => id) as string[];
+    const statsMap = await getVideoStatistics(videoIds);
+
+    for (const item of searchData.items) {
+        const stats = statsMap.get(item.id.videoId ?? '');
+        if (stats) {
+            item.snippet.commentCount = stats;
+        }
+    }
+
+    return searchData as YouTubeSearchResponse;
 }
 
 export async function getVideoStatistics(

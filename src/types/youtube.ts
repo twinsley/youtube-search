@@ -21,6 +21,7 @@ export interface YouTubeVideoSnippet {
   };
   channelTitle: string;
   liveBroadcastContent: string;
+  commentCount: string;
 }
 
 export interface YouTubeVideoId {

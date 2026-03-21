@@ -12,7 +12,7 @@ export class VideoCard extends LitElement {
             return html``;
         }
 
-        const { title, description } = this.item.snippet;
+        const { title, description, commentCount } = this.item.snippet;
         const thumbnailUrl = this.item.snippet.thumbnails.medium.url;
         console.log(this.item);
 
@@ -22,6 +22,8 @@ export class VideoCard extends LitElement {
                 <div class="video-info">
                     <h3 class="title">${title}</h3>
                     <p class="description">${description}</p>
+                    <p class="comments">${commentCount} comments</p>
+
                 </div>
             </div>
         `;
