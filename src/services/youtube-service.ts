@@ -1,12 +1,11 @@
 import type { VideoStatisticsResponse, YouTubeSearchParams, YouTubeSearchResponse } from '../types/youtube.ts';
 
-const API_KEY = import.meta.env.YOUTUBE_API_KEY ?? '';
-const BASE_URL = import.meta.env.YOUTUBE_URL ?? '';
+const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY ?? '';
+const BASE_URL = import.meta.env.VITE_YOUTUBE_URL ?? '';
 
 export async function searchYouTube(
     params: YouTubeSearchParams
 ): Promise<YouTubeSearchResponse> {
-
     if (!API_KEY) {
         throw new Error('API Key is missing. Please set it.');
     }

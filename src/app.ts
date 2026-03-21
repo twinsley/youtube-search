@@ -10,7 +10,7 @@ export class LitApp extends LitElement {
     private _router = new Router(this, [
         {
             path: '/results',
-            render: () => html`<result-page></result-page>`
+            render: () => html`<result-page .query=${this._query}></result-page>`
         },
         {
             path: '/',

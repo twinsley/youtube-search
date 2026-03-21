@@ -1,16 +1,92 @@
-import { LitElement, css, html } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { LitElement, css, html, nothing } from 'lit'
+import { customElement, property, state } from 'lit/decorators.js'
+import { Task } from '@lit/task';
+import type { YouTubeSearchItem } from '../../types/youtube';
+import { searchYouTube } from '../../services/youtube-service';
+import '../../components/video-card.ts';
 
 @customElement('result-page')
 export class ResultPage extends LitElement {
-    //TODO implement result page. Should have a list of video results, nav/searchbar at the top, and filter options between
-    // the navbar and list of results. Maybe should have a loading state as well? Depends on how long the api calls take.
-    // This page will also handle fetching the results via the youtube service, use a Task for this.
+
+    @property({ type: String })
+    query = '';
+
+    @state()
+    private _items: YouTubeSearchItem[] = [];
+
+    @state()
+    private _loadingMore = false;
+
+    @state()
+    private _nextPageToken = '';
+
+    @state()
+    private _totalResults = 0;
+
+    @state()
+    private _showFilters = false;
+
+    private _searchCount = 0;
+
+    private _searchTask = new Task(this, {
+        args: () =>
+            [this.query, this._searchCount] as const,
+        task: async ([query], { signal }) => {
+            if (!query) return null;
+            const response = await searchYouTube({
+                query
+            });
+            signal.throwIfAborted();
+            this._items = response.items;
+            this._nextPageToken = response.nextPageToken ?? '';
+            this._totalResults = response.pageInfo.totalResults;
+            return response;
+        },
+    });
+
+
     render() {
         return html`
             <h1>Results</h1>
-            <video-sort></video-sort>
-            <video-list></video-list>
-        `;
+            ${this._searchTask.render({
+            initial: () => nothing,
+            pending: () => html`
+          <div class="loading">
+            <div class="spinner"></div>
+            <span>Searching...</span>
+          </div>
+        `,
+            error: (err) => html`
+          <div class="error">
+            <p class="error-message">
+              ${err instanceof Error ? err.message : 'An unexpected error occurred.'}
+            </p>
+            <button class="retry-btn" @click=${() => this._searchCount++}>
+              Retry
+            </button>
+          </div>
+        `,
+            complete: (response) =>
+                !response || this._items.length === 0
+                    ? html`
+                <div class="no-results">
+                  <span style="font-size: 48px">🔍</span>
+                  <p>No results found for "<strong>${this.query}</strong>"</p>
+                  <p>Try different keywords or adjust your filters</p>
+                </div>
+              `
+                    : html`
+                <div class="results-info">
+                  About ${this._totalResults.toLocaleString()} results
+                </div>
+                <div class="results-list">
+                  ${this._items.map(
+                        (item) =>
+                            html`<video-card .item=${item}></video-card>`
+                    )}
+                </div>
+              `,
+        })}
+    `;
     }
 }
