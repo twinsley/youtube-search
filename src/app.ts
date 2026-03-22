@@ -4,13 +4,14 @@ import { Router } from '@lit-labs/router';
 import './pages/home/home.ts';
 import './pages/result/result.ts';
 import './components/navbar.ts';
+import type { YouTubeSearchParams } from './types/youtube.ts';
 
 @customElement('lit-app')
 export class LitApp extends LitElement {
     private _router = new Router(this, [
         {
             path: '/results',
-            render: () => html`<result-page .query=${this._query}></result-page>`
+            render: () => html`<result-page .query=${this._query} .sort=${this._sort}></result-page>`
         },
         {
             path: '/',
@@ -23,9 +24,13 @@ export class LitApp extends LitElement {
     @state()
     private _query = '';
 
+    @state()
+    private _sort: YouTubeSearchParams['sortBy'] = 'relevance';
+
     private _onSearch(e: CustomEvent) {
         this._query = e.detail.query;
-        history.pushState(null, "", "/results?" + new URLSearchParams({query: this._query}));
+        this._sort = e.detail.sort;
+        history.pushState(null, "", "/results?" + new URLSearchParams({query: this._query, sort: this._sort}).toString());
         this._router.goto('/results');
     }
 

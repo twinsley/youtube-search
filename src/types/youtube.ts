@@ -1,5 +1,6 @@
 export interface YouTubeSearchParams {
   query: string;
+  sortBy: 'relevance' | 'date' | 'rating';
   pageToken?: string;
 }
 

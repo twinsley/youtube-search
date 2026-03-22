@@ -1,8 +1,9 @@
 import { LitElement, css, html, nothing } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { Task } from '@lit/task';
-import type { YouTubeSearchItem } from '../../types/youtube';
+import type { YouTubeSearchItem, YouTubeSearchParams } from '../../types/youtube';
 import { searchYouTube } from '../../services/youtube-service';
+import { mockSearchYouTube } from '../../services/mock-youtube-service';
 import '../../components/video-card.ts';
 
 @customElement('result-page')
@@ -10,6 +11,9 @@ export class ResultPage extends LitElement {
 
     @property({ type: String })
     query = '';
+
+    @property({ type: String })
+    sort: YouTubeSearchParams['sortBy'] = 'relevance';
 
     @state()
     private _items: YouTubeSearchItem[] = [];
@@ -28,13 +32,23 @@ export class ResultPage extends LitElement {
 
     private _searchCount = 0;
 
+    connectedCallback() {
+        super.connectedCallback();
+        if (this.query === '') {
+            this.query = new URLSearchParams(window.location.search).get('query') ?? '';
+        }
+        this.sort = (new URLSearchParams(window.location.search).get('sort') as YouTubeSearchParams['sortBy']) || 'relevance';
+    }
+
     private _searchTask = new Task(this, {
         args: () =>
-            [this.query, this._searchCount] as const,
-        task: async ([query], { signal }) => {
+            [this.query, this.sort, this._searchCount] as const,
+        task: async ([query, sort], { signal }) => {
+            console.log('Searching for:', query, 'with sort:', sort);
             if (!query) return null;
             const response = await searchYouTube({
-                query
+                query,
+                sortBy: sort,
             });
             signal.throwIfAborted();
             this._items = response.items;
@@ -47,6 +61,7 @@ export class ResultPage extends LitElement {
 
     render() {
         return html`
+        <search-bar .sort=${this.sort} .query=${this.query}></search-bar>
             <h1>Results</h1>
             ${this._searchTask.render({
             initial: () => nothing,

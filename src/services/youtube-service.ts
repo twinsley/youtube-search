@@ -18,6 +18,8 @@ export async function searchYouTube(
     url.searchParams.set('q', params.query);
     url.searchParams.set('key', API_KEY);
     url.searchParams.set('type', 'video');
+    url.searchParams.set('order', params.sortBy);
+    url.searchParams.set('maxResults', '10');
 
     if (params.pageToken) {
         url.searchParams.set('pageToken', params.pageToken);
