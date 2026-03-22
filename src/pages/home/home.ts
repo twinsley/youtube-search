@@ -1,16 +1,19 @@
-import { LitElement, css, html } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
-import '../../components/search.ts';
-import '../../components/navbar.ts';
+import { LitElement, css, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import "../../components/search.ts";
 
-@customElement('home-page')
+@customElement("home-page")
 export class HomePage extends LitElement {
-
-    render() {
-        return html`
-        <nav-bar><navbar></navbar></nav-bar>
-            <h1>Search YouTube</h1>
-            <search-bar></search-bar>
-        `;
+  static styles = css`
+    :host {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 86vh;
     }
+  `;
+
+  render() {
+    return html` <search-bar></search-bar> `;
+  }
 }

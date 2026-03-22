@@ -37,7 +37,7 @@ Improvements if I have time
 ## Architectural Descision Log
 Chose to go with TypeScript over JS mostly due to personal preference, it has some perks like strict types but nothing that would be a dealbreaker for either one on this project.
 
-Chose to use Lit Context for managing bookmark state
+Chose to use Lit Context for managing bookmark state if needed. Events work fine for managing the search state e.g. query and sort order
 
 Chose to use Lit Tasks with Fetch for managing API calls. Lit Tasks help with managing async requests like API requests
 From the docs

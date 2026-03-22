@@ -26,7 +26,8 @@ export class SearchBar extends LitElement {
         padding: 0 16px;
         height: 44px;
         transition: border-color 0.2s;
-        border: 1px solid;
+        border: 1px solid #555;
+        background: #333;
       }
 
     input {
@@ -38,16 +39,20 @@ export class SearchBar extends LitElement {
         font-family: inherit;
         padding: 0;
         height: 100%;
+        color: #fff;
+
       }
 
     .search-btn {
         display: flex;
         align-items: center;
         justify-content: center;
-        border-left: none;
+        border-left:  1px solid #555;
         border-radius: 0 40px 40px 0;
         height: 44px;
         width: 64px;
+        background: #444;
+        color: #fff;
       }
 
     .search-icon {
@@ -57,43 +62,44 @@ export class SearchBar extends LitElement {
     .sort-buttons input[type="radio"] {
         display: none;
     }
-    .sort-buttons label {
-        padding: 0.5rem 1rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        background: white;
-        cursor: pointer;
-        transition: background 0.2s;
+    .sort-buttons label:focus {
+        outline: 2px solid #4dabf7;
     }
     .sort-buttons input[type="radio"]:checked + label {
-        background: #007bff;
-        color: white;
-        border-color: #007bff;
+        background: #4dabf7;
+        color: fff;
+        border-color: #4dabf7;
     }
-        .filter-group {
+    .filter-group {
         display: flex;
         align-items: center;
         gap: 1rem;
         margin-top: 1rem;
+        width: 100%;
+        justify-content: center;
     }
     .filter-label {
         font-weight: bold;
+        color: #fff;
     }
     .sort-buttons {
         display: flex;
         gap: 0.5rem;
         flex-direction: row;
         align-items: center;
+        border-radius: 20px;
     }
     .sort-buttons label {
         display: inline-block;
         padding: 0.5rem 1rem;
         border: 1px solid #ccc;
         border-radius: 4px;
-        background: white;
+        background: #444;
+        color: #fff;
         cursor: pointer;
         transition: background 0.2s;
         white-space: nowrap;
+        border-radius: 20px;
     }
     `,
     ];
@@ -130,6 +136,15 @@ export class SearchBar extends LitElement {
             }));
         }
     }
+    private _onLabelKeydown(e: KeyboardEvent) {
+        if (e.key === ' ') {
+            e.preventDefault();
+            const label = e.target as HTMLLabelElement;
+            const input = label.previousElementSibling as HTMLInputElement;
+            input.checked = true;
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
 
     render() {
         return html`<form @submit=${this._handleSubmit}>
@@ -142,20 +157,18 @@ export class SearchBar extends LitElement {
             aria-label="Search"
           />
         </div>
-        <button type="submit" class="search-btn" aria-label="Search"></button>
-
-        
+        <button type="submit" class="search-btn" aria-label="Search">Search</button>
       </form>
-              <div class="filter-group">
-          <div class="filter-label">Sort By</div>
-            <div class="sort-buttons">
-                <input type="radio" id="relevance" name="sort" value="relevance" ?checked=${this.sort === 'relevance'} @change=${this._onSortChange} />
-                <label for="relevance">Relevance</label>
-                <input type="radio" id="date" name="sort" value="date" ?checked=${this.sort === 'date'} @change=${this._onSortChange} />
-                <label for="date">Upload date</label>
-                <input type="radio" id="rating" name="sort" value="rating" ?checked=${this.sort === 'rating'} @change=${this._onSortChange} />
-                <label for="rating">Rating</label>
-            </div>
+    <div class="filter-group">
+        <!-- <div class="filter-label">Sort By</div> -->
+        <div class="sort-buttons">
+            <input type="radio" id="relevance" name="sort" value="relevance" ?checked=${this.sort === 'relevance'} @change=${this._onSortChange} />
+            <label for="relevance" tabindex="0" @keydown=${this._onLabelKeydown}>Relevance</label>
+            <input type="radio" id="date" name="sort" value="date" ?checked=${this.sort === 'date'} @change=${this._onSortChange} />
+            <label for="date" tabindex="0" @keydown=${this._onLabelKeydown}>Upload date</label>
+            <input type="radio" id="rating" name="sort" value="rating" ?checked=${this.sort === 'rating'} @change=${this._onSortChange} />
+            <label for="rating" tabindex="0" @keydown=${this._onLabelKeydown}>Rating</label>
+        </div>
     </div>`;
     }
 }
