@@ -1,13 +1,12 @@
 import { LitElement, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { Task } from "@lit/task";
+import { searchYouTube } from "../../services/youtube-service";
+import "../../components/video-card.ts";
 import type {
   YouTubeSearchItem,
   YouTubeSearchParams,
 } from "../../types/youtube";
-import { searchYouTube } from "../../services/youtube-service";
-import { mockSearchYouTube } from "../../services/mock-youtube-service";
-import "../../components/video-card.ts";
 
 @customElement("result-page")
 export class ResultPage extends LitElement {

@@ -54,3 +54,6 @@ Allows aborting tasks with an AbortController
 
 
 The design I went with included multiple pages, which meant I needed a client side router. I chose to use Lit Labs Router for routing between the pages. Other options are available of course and perhaps would be better choices for a production app (e.g. @vaadin/router for example, although this one is now deprecated) because of the Lit Labs router being in beta still, but for this project the Lit one works fine and integrates easily since it's built by the Lit team.
+
+
+Chose to use Local Storage for the bookmarks. Other options considered included IndexedDB (will convert to this if time allows, it's a slightly more complex option but superior due to being async, better at handling larger quantities of data, etc), or using a backend DB. Session storage and cookies were briefly considered and quickly dropped as options due to the limitations. (limited to the session in the case of session storage, cookies aren't suitable for data )

@@ -1,15 +1,14 @@
 import { LitElement, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type { YouTubeSearchItem } from "../types/youtube";
+import type { BookmarksContextData } from "../types/bookmark";
+import { bookmarksContext } from "../contexts/bookmark-context";
+import { consume } from "@lit/context";
 
 @customElement("video-card")
 export class VideoCard extends LitElement {
   static styles = [
     css`
-      :host {
-        display: block;
-      }
-
       .video-card {
         display: flex;
         gap: 16px;
@@ -101,6 +100,37 @@ export class VideoCard extends LitElement {
       .title-row h3 {
         flex: 1;
       }
+      .bookmark-btn {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: transparent;
+        color: #ccc;
+        transition: all 0.15s;
+        padding: 0;
+        border: 1px solid transparent;
+      }
+
+      .bookmark-btn:hover {
+        background: #555;
+        color: #fff;
+        border-color: #555;
+      }
+
+      .bookmark-btn.active {
+        color: #4dabf7;
+        background: transparent;
+      }
+
+      .bookmark-btn svg {
+        width: 22px;
+        height: 22px;
+        fill: currentColor;
+      }
 
       @media (max-width: 720px) {
         .video-card {
@@ -126,6 +156,16 @@ export class VideoCard extends LitElement {
 
   @property({ type: Object })
   item: YouTubeSearchItem | null = null;
+
+  @consume({ context: bookmarksContext, subscribe: true })
+  private _bookmarks!: BookmarksContextData;
+
+  private _onToggleBookmark(e: Event) {
+    e.stopPropagation();
+    if (this.item) {
+      this._bookmarks.toggle(this.item);
+    }
+  }
 
   render() {
     if (!this.item) {
@@ -165,6 +205,30 @@ export class VideoCard extends LitElement {
                 >${title}</a
               >
             </h3>
+            <button
+              class="bookmark-btn ${this._bookmarks?.isBookmarked(this.item)
+                ? "active"
+                : ""}"
+              @click=${this._onToggleBookmark}
+              aria-label=${this._bookmarks?.isBookmarked(this.item)
+                ? "Remove bookmark"
+                : "Add bookmark"}
+              title=${this._bookmarks?.isBookmarked(this.item)
+                ? "Remove bookmark"
+                : "Add bookmark"}
+            >
+              ${this._bookmarks?.isBookmarked(this.item)
+                ? html`<svg viewBox="0 0 24 24">
+                    <path
+                      d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"
+                    />
+                  </svg>`
+                : html`<svg viewBox="0 0 24 24">
+                    <path
+                      d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"
+                    />
+                  </svg>`}
+            </button>
           </div>
           <p class="description">${description}</p>
           <span class="comment-count">
