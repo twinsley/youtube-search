@@ -1,59 +1,57 @@
 # youtube-search
 
-## Design
-Main search page
-    search bar centered in page, options to select filters and bookmarks underneath
-Results page
-    move search bar to top, show video results in card. Video on left side, description on right. Should have an icon to bookmark a video, probably upper right corner of the card
-Bookmarks page
-    Use same video card to show bookmarked videos. Store the bookmark list in local storage.
+## What is this?
+This is a project providing a standalone UI for searching Youtube, using [Lit.dev](https://lit.dev) to build it and the Youtube Data API to provide data.
 
-TODO - Build video card element
-TODO - Build service to call Youtube API
-TODO - Build search bar element
-TODO - Build 
+### Requirements
 
-Search & Discovery
-● Keyword Search: Integrate with the YouTube Data API to fetch results.
-● Sorting: Support sorting by Date, Rating, and Relevance.
-● List/Grid View: Display results with:
-○ Title (Link to the video on YouTube.com).
-○ Thumbnail image.
-○ Description.
-○ Total comment count.
-2. The Senior-Level Requirement: Persistence & Decoupling
-● Bookmarks: Users must be able to "Save" videos to a bookmarks list.
-○ Users should be able to view their list of bookmarks using the same list/grid
-components as the regular search.
-● Storage: Bookmarks must persist across sessions.
-● Architecture: The "Search" and "Bookmarks" components should be decoupled. They
-should be composed from the same base components, but should be able to run
-independently of one another.
+**Search**
+  - Searching by keyword
+  - Sorting by date, rating, relevance
 
+**Results**
+  - List view
+  - Title that links to the video
+  - Thumbnail
+  - Description
+  - Comment count
 
-Improvements if I have time
-    Convert it to use a server to proxy the API call, this would allow securing the API key and could allow for caching if desired
+## Local Setup
 
-## Architectural Descision Log
-Chose to go with TypeScript over JS mostly due to personal preference, it has some perks like strict types but nothing that would be a dealbreaker for either one on this project.
+**Download**
+```
+git clone https://github.com/twinsley/youtube-search.git
+cd youtube-search
+```
 
-Chose to use Lit Context for managing bookmark state if needed. Events work fine for managing the search state e.g. query and sort order
+**Install Dependencies**
+```
+npm install
+```
 
-Chose to use Lit Tasks with Fetch for managing API calls. Lit Tasks help with managing async requests like API requests
-From the docs
-Task takes care of a number of things needed to properly manage async work:
+**Setup env vars:**
+Copy the .env.sample file and rename to .env.
 
-Gathers task arguments when the host updates
-Runs task functions when arguments change
-Tracks the task status (initial, pending, complete, or error)
-Saves the last completion value or error of the task function
-Triggers a host update when the task changes status
-Handles race conditions, ensuring that only the latest task invocation completes the task
-Renders the correct template for the current task status
-Allows aborting tasks with an AbortController
+For the `VITE_YOUTUBE_API_KEY` you will need to follow the instructions [here](https://developers.google.com/youtube/v3/getting-started#before-you-start) to create a new API key. 
+
+_NOTE: It's highly recommended that the API permisions be restricted to YouTube, and only the minimum of public IPs or domains be allowed for security._
+
+**Start the app**
+```
+npm run dev
+```
+
+## Possible future improvements
+There's a couple things I'd like to improve on this project had I had the time (or maybe going forward)
+
+Change it to use a server to proxy the API call - Best practice for third party APIs is generally to proxy the calls through a backend server rather than handing out API keys to the clients. This would allow protecting that key and preventing it from being abused by anyone who looks at DevTools.
+
+Rework the bookmark functionality to use a backend server and DB rather than the Local Storage. This would avoid the potential pitfalls of local storage (IndexedDB is better here, but still has some of the same pitfalls), like data being potentially cleared without the user intending it to.
+
+Maybe use a video-list component instead of using video-card in a map function on multiple pages (result and bookmark) to simplify the components a bit further.
 
 
-The design I went with included multiple pages, which meant I needed a client side router. I chose to use Lit Labs Router for routing between the pages. Other options are available of course and perhaps would be better choices for a production app (e.g. @vaadin/router for example, although this one is now deprecated) because of the Lit Labs router being in beta still, but for this project the Lit one works fine and integrates easily since it's built by the Lit team.
+## Architectural Decision Log
+Chose to go with TypeScript over JS mostly due to personal preference. Either would have worked, but TS has some perks like static types that make it a bit nicer to use in my opinion.
 
-
-Chose to use Local Storage for the bookmarks. Other options considered included IndexedDB (will convert to this if time allows, it's a slightly more complex option but superior due to being async, better at handling larger quantities of data, etc), or using a backend DB. Session storage and cookies were briefly considered and quickly dropped as options due to the limitations. (limited to the session in the case of session storage, cookies aren't suitable for data )
+Used a combination of Events and Lit Context for managing state. Events work well and are simple for handling search events, but adding in Lit Context simplifies handling bookmark data.

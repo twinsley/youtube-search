@@ -80,9 +80,6 @@ export class ResultPage extends LitElement {
   private _totalResults = 0;
 
   @state()
-  private _showFilters = false;
-
-  @state()
   private _searchCount = 0;
 
   connectedCallback() {

@@ -1,4 +1,4 @@
-import { LitElement, css, html, nothing } from "lit";
+import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type { YouTubeSearchItem } from "../types/youtube";
 import type { BookmarksContextData } from "../types/bookmark";
